@@ -212,6 +212,13 @@
 **non-virtual函数具体指定接口继承以及强制性实现继承**
 
 ## 条款35：考虑virtual函数以外的其他选择
+
+**virtual函数的替代方案包括NVI手法及Strategy设计模式的多种形式。NVI手法自身是一个特殊形式的Template Method设计模式**
+
+**将机能从成员函数移到class外部函数，带来的一个缺点是，非成员函数无法访问class的non-public成员**
+
+**tr1::function对象的行为就像一般函数指针。这样的对象可接纳“与给定之目标签名式（target signature）兼容”的所有可调用物（callable entities）**
+
 ## 条款36：绝不重新定义继承而来的non-virtual函数
 ## 条款37：绝不重新定义继承而来的缺省参数值
 ## 条款38：通过复合塑模出has-a或“根据某物实现出”
