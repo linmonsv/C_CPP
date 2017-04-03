@@ -197,11 +197,20 @@
 
 ## 条款33：避免遮掩继承而来的名称
 
-**derived classs内的名称会遮掩base classes内的名称。在public继承下从来没有人希望如此**
+**derived classes内的名称会遮掩base classes内的名称。在public继承下从来没有人希望如此**
 
 **为了让被遮掩的名称再见天日，可使用using声明式或转交函数（forwarding functions）**
 
 ## 条款34：区分接口继承和实现继承
+
+**接口继承和实现继承不同。在public继承之下，derived classes总是继承base class的接口**
+
+**pure virtual函数只具体指定接口继承**
+
+**简朴的（非纯）impure virtual函数具体指定接口继承及缺省实现继承**
+
+**non-virtual函数具体指定接口继承以及强制性实现继承**
+
 ## 条款35：考虑virtual函数以外的其他选择
 ## 条款36：绝不重新定义继承而来的non-virtual函数
 ## 条款37：绝不重新定义继承而来的缺省参数值
