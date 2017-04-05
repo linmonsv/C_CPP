@@ -264,6 +264,9 @@
 **请使用关键字typename标识嵌套从属类型名称；但不得在base class lists（基类列）或member initialization list（成员初值列）内以它作为base class修饰符**
 
 ## 条款43：学习处理模板化基类内的名称
+
+**可在derived class templates内通过“this->”指渉base class templates内的成员名称，或藉由一个明白写出的的“base class资格修饰符”完成**
+
 ## 条款44：将与参数无关的代码抽离templates
 ## 条款45：运用成员函数模板接受所有兼容类型
 ## 条款46：需要类型转换时请为模板定义非成员函数
