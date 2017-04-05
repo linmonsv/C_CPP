@@ -258,6 +258,11 @@
 **对template参数而言，接口是隐式的（implicit），奠基于有效表达式。多态则是通过template具现化和函数重载解析（function overloading resolution）发生于编译期**
 
 ## 条款42：了解typename的双重意义
+
+**声明template参数时，前缀关键字class和typename可互换**
+
+**请使用关键字typename标识嵌套从属类型名称；但不得在base class lists（基类列）或member initialization list（成员初值列）内以它作为base class修饰符**
+
 ## 条款43：学习处理模板化基类内的名称
 ## 条款44：将与参数无关的代码抽离templates
 ## 条款45：运用成员函数模板接受所有兼容类型
