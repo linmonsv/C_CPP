@@ -276,6 +276,11 @@
 **因类型参数（type parameters）而造成的代码膨胀，往往可降低，做法是让带有完全相同二进制表述（binary representations）的具现类型（instantiation types）共享实现码**
 
 ## 条款45：运用成员函数模板接受所有兼容类型
+
+**请使用member function templates（成员函数模板）生成“可接受所有兼容类型”的函数**
+
+**如果你声明member templates用于“泛化copy构造”或“泛化assignment操作”，你还是需要声明正常的copy构造函数和copy assignment操作符**
+
 ## 条款46：需要类型转换时请为模板定义非成员函数
 ## 条款47：请使用traits classes表现类型信息
 ## 条款48：认识template元编程
