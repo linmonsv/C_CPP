@@ -273,7 +273,7 @@
 
 **因非类型模版参数（non-type template parameters）而造成的代码膨胀，往往可消除，做法是以函数参数或class成员变量替换template参数**
 
-**因类型参数（type parameters）而造成的代码膨胀，往往可降低，做法是让带有完全相同二进制表述（binary representations）的具现类型（instantiation）共享实现码**
+**因类型参数（type parameters）而造成的代码膨胀，往往可降低，做法是让带有完全相同二进制表述（binary representations）的具现类型（instantiation types）共享实现码**
 
 ## 条款45：运用成员函数模板接受所有兼容类型
 ## 条款46：需要类型转换时请为模板定义非成员函数
