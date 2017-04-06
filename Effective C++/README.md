@@ -282,8 +282,20 @@
 **如果你声明member templates用于“泛化copy构造”或“泛化assignment操作”，你还是需要声明正常的copy构造函数和copy assignment操作符**
 
 ## 条款46：需要类型转换时请为模板定义非成员函数
+
+**当我们编写一个class template，而它所提供之“与此template相关的”函数支持“所有参数之隐式类型转换”时，请将那些函数定义为“class template内部的friend函数”**
+
 ## 条款47：请使用traits classes表现类型信息
+
+**Traits classes使得“类型相关信息”在编译期可用。它们以templates和“templates特化”完成实现**
+
+**整合重载技术（overloading）后，traits classes有可能在编译期对类型执行if...else测试**
+
 ## 条款48：认识template元编程
+
+**Template metaprogramming（TMP，模板元编程）可将工作由运行期移往编译期，因而得以实现早期错误侦测和更高的执行效率**
+
+**TMP可被用来生成“基于政策选择组合”（based on combinations of policy choices）的客户定制代码，也可用来避免生成对某些特殊类型并不适合的代码**
 
 # 8 定制new和delete
 
