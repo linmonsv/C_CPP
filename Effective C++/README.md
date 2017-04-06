@@ -300,9 +300,26 @@
 # 8 定制new和delete
 
 ## 条款49：了解new-handler的行为
+
+**set_new_handler允许客户指定一个函数，在内存分配无法获得满足时被调用**
+
+**Nothrow new是一个颇为局限的工具，因为它只适用于内存分配；后继的构造函数调用还是可能抛出异常**
+
 ## 条款50：了解new和delete的合理替换时机
+
+**有许多理由需要写个自定的new和delete，包括改善效能、对heap运用错误进行调试、收集heap使用信息**
+
 ## 条款51：编写new和delete时需固守常规
+
+**operator new应该内含一个无穷循环，并在其中尝试分配内存，如果它无法满足内存需求，就该调用new-handler。它也应该有能力处理0 bytes申请。Class专属版本则还应该处理“比正确大小更大的（错误）申请”**
+
+**operator delete应该在收到null指针时不做任何事。Class专属版本则还应该处理“比正确大小更大的（错误）申请”**
+
 ## 条款52：写了placement new 也要写placement delete
+
+**当你写一个placement operator new，请确定也写出了对应的placement operator delete。如果没有这样做，你的程序可能会发生隐微而时断时续的内存泄漏**
+
+**当你声明placement new和placement delete，请确定不要无意识（非故意）地遮掩了它们的正常版本**
 
 # 9 杂项讨论
 
