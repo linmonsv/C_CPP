@@ -114,12 +114,49 @@ C++程序设计模型直接支持三种programming paradigms（程序设计范�
 
 弹性（OO）和效率（OB）
 
-# 第2章 构造函数语意学
+# 第2章 构造函数语意学（The Semantics of Constructor）
 
 ## 2.1 Default Constructor的构造操作
+
+**"带有 Default Constructor" 的 Member Class Object**
+
+**"带有 Default Constructor" 的 Base Class**
+
+**"带有一个Virtual Function" 的 Class**
+
+**"带有一个 Virtual Base Class" 的 Class**
+
+**总结**
+
 ## 2.2 Copy Constructor的构造操作
-## 2.3 程序转化语意学
-## 2.4 成员们的初始化队伍
+
+**Default Memberwise Initialization**
+
+**Bitwise Copy Semantics（位逐次拷贝）**
+
+**不要Bitwise Copy Semantics！**
+
+**重新设定Virtual Table的指针**
+
+**处理Virtaul Base Class Subobject**
+
+## 2.3 程序转化语意学（Program Transformation Semantics）
+
+**显示的初始化操作（Explicit Initialization）**
+
+**参数的初始化（Argument Initialization）**
+
+**返回值的初始化（Return Value Initialization）**
+
+**在使用者层面做优化（Optimization at the User Level）**
+
+**在编译器层面做优化（Optimization at the Compiler Level）**
+
+**Copy Constructor：要还是不要？**
+
+**摘要**
+
+## 2.4 成员们的初始化队伍（Member Initialization List）
 
 # 第3章 Data语意学
 
