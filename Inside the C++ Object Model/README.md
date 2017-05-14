@@ -116,29 +116,99 @@ C++程序设计模型直接支持三种programming paradigms（程序设计范�
 
 # 第2章 构造函数语意学（The Semantics of Constructor）
 
+编译器背着程序员做了太多事情
+
+explicit之所以被导入这个语言，就是为了给程序员提供一种方法，使他们能够
+
+制止“单一参数的constructor”被当作一个conversion运算符
+
 ## 2.1 Default Constructor的构造操作
 
+C++ Annotated Reference Manual（ARM），，，中的Section 12.1,，，：“default constructions。。。。。。在需要的时候被编译器产生出来”
+
+一个是程序的需要，，，一个是编译器的需要，，，
+
+C++ Standard已经修改了ARM的中的说法，，，Section 12.1,，，：
+
+对于class X，如果没有任何user-declared constructor，那么会有一个default constructor被隐式（implicity）声明出来......一个被隐式声明出来的default constructor将是一个trivial（浅薄而无能的，没啥用的）constructor......
+
 **"带有 Default Constructor" 的 Member Class Object**
+
+编译器如何避免合成出多个default constructor，，，解决方法是把合成的，，，都以inline方式完成
+
+被合成的default constructor只满足编译器的需要
+
+如果有多个class member objects都要求constructor初始化操作，，，
+
+C++语言要求以“member object在class中的声明顺序”来调用各个constructors
 
 **"带有 Default Constructor" 的 Base Class**
 
 **"带有一个Virtual Function" 的 Class**
 
+另有两种情况，也需要合成default constructor：
+
+1. class声明（或继承）一个virtual function
+2. class派生自一个继承串链，其中有一个或更多的virtual base classes
+
+下面两个扩张行动会在编译期间发生：
+
+1. ，，，vtbl，，，
+2. ，，，vptr，，，
+
 **"带有一个 Virtual Base Class" 的 Class**
+
+必须使virtual base class在其每一个derived class object中的位置，能够于执行期间准备妥当
 
 **总结**
 
+有4种情况，会造成“编译器必须为未声明constructor的classes合成一个default constructor”
+
+至于没有存在那4种情况而又没有声明任何constructor的classes，我们说它们拥有的是implicit trivial default constructors，它们实际上并不会被合成出来
+
+在合成的default constructor中，只有base class subobjects和member class objects会被初始化
+
+，，，两个常见的误解：
+
+1. 任何class如果没有定义的default constructor，就会被合成出一个来，，，错
+2. 编译器合成出来的default constructor会显式设定“class内部每一个data member的默认值”，，，错
+
 ## 2.2 Copy Constructor的构造操作
+
+有三种情况，会以一个object的内容作为另一个class object的初值。
+
+最明显的一种情况当然就是对一个object做显式的初始化操作，
+
+另两种情况是当object被当做参数交给某个函数时，
+
+以及当函数传回一个class object时
 
 **Default Memberwise Initialization**
 
+把每一个内建的或派生的data member的值，从某个object拷贝一份到另一个object身上
+
 **Bitwise Copy Semantics（位逐次拷贝）**
+
+char *
+
+String
 
 **不要Bitwise Copy Semantics！**
 
+4种情况：
+
+1. 当class内含一个member object而后者的class声明有一个copy constructor时
+2. 当class继承自一个base class而后者存在一个copy constructor时
+3. 当class声明了一个或多个virtual functions时
+4. 当class派生自一个继承串链，其中有一个或多个virtual base classes时
+
 **重新设定Virtual Table的指针**
 
+当编译器导入一个vptr到class之中时，该class就不再展现bitwise semantics了。现在，编译器需要合成一个copy constructor以求将vptr适当地初始化
+
 **处理Virtaul Base Class Subobject**
+
+维护“位置的完整性”是编译器的责任。“Bitwise copy semantics”可能会破坏这个位置，所以编译器必须在它合成出来的copy constructor中作出仲裁
 
 ## 2.3 程序转化语意学（Program Transformation Semantics）
 
