@@ -280,14 +280,32 @@ initialization list的项目被放在explicit user code之前
 
 它会安插一些代码到constructor体内，并置于任何explicit user code之前
 
-# 第3章 Data语意学
+# 第3章 Data语意学（The Semantics of Data）
 
-## 3.1 Data Member的绑定
-## 3.2 Data Member的布局
+## 3.1 Data Member的绑定（The Binding of a Data Member）
+
+## 3.2 Data Member的布局（Data Member Layout）
+
 ## 3.3 Data Member的存取
+
+**Static Data Members**
+
+**Nonstatic Data Members**
+
 ## 3.4 “继承”与Date Member
-## 3.5 对象成员的效率
-## 3.6 指向Data Members的指针
+
+只要继承不要多态（Inheritance without Polymorphism）
+
+加上多态（Adding Polymorphism）
+
+多重继承（Multiple Inheritance）
+
+虚拟继承（Virtual Inheritance）
+
+## 3.5 对象成员的效率（Object Member Efficiency）
+
+## 3.6 指向Data Members的指针（Pointer of Data Members）
+“指向Members的指针”的效率问题
 
 # 第4章 Function语意学
 
