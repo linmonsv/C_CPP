@@ -1,4 +1,4 @@
-﻿# 前言
+# 前言（Stanley B. Lippman）
 
 管理一个软件团队，就像放牧一群骄傲的猫
 
@@ -8,7 +8,7 @@
 2. 语言语意转换
 3. 程序代码和对象模型的转换
 
-什么是C++对象模型
+**什么是C++对象模型**
 
 有两个概念可以解释C++对象模型：
 
@@ -29,6 +29,8 @@ virtual function calls，一般而言是通过一个表格的索引而决议得�
 
 # 第0章 导读
 
+**读者对象**
+
 C++老手分两类：
 
 一种人把语言用的烂熟，OO观念也有;
@@ -37,7 +39,7 @@ C++老手分两类：
 
 了解C++对象模型，绝对有助于你在语言本身以及面向对象观念两方面的层次提升
 
-推荐
+**推荐**
 
 对象模型是深层结构的知识，关系到“与语言无关、与平台无关、跨网络可执行”软件组件（software component）的基础原理。
 
@@ -45,11 +47,72 @@ C++老手分两类：
 
 如果对COM有兴趣，，，推荐看另一本书：Essential COM， Don Box著，《COM本质论》
 
-# 第1章 关于对象
+# 第1章 关于对象（Object Lessons）
 
-## 1.1 C++对象模式
-## 1.2 关键词所带来的差异
-## 1.3 对象的差异
+语言本身并没有支持“数据和函数”之间的关联性，，，程序性的（procedural），
+
+由一组“分布在各个以功能为导向的函数中”的算法所驱动，它们所处理的是共同的外部数据
+
+“抽象数据类型（abstract data type，ADT）
+
+从一个软件工程的眼光来看，，，“一个ADT或class hierarchy的数据封装”比“在C程序中程序性地使用全局数据”好
+
+C的吸引力就在于它的精瘦和简易
+
+**加上封装后的布局成本（Layout Costs for Adding Encapsulation）**
+
+C++在布局以及存取时间上的主要额外负担是由virtual引起的
+
+## 1.1 C++ 对象模式（The C++ Object Model）
+
+在C++中，有两种class data members: static 和 nonstatic，以及三种class member functions：static、nonstatic和virtual
+
+**简单对象模型（A Simple Object Model）**
+
+可能是为了尽量减低C++编译器的设计复杂度而开发出来的，陪上的则是空间和执行其的效率
+
+**表格驱动对象模型（A Table-driven Object Model）**
+
+为了对所有的classes的所有objects都有一致的表达方式，另一种对象模型是把所有与memmder相关的信息抽出来，
+
+放在一个data member table和一个member function table之中，class object本身则内含指向这两个表格的指针
+
+**C++ 对象模型（The C++ Object Model）**
+
+Nonstatic，，，static，，，则被存放在个别的，，，
+
+Virtual functions则以两个步骤支持之：
+
+1. 每一个class产生出一堆指向virtual functions的指针，放在表格之中，，，virtual table（vtbl）
+2. 每一个class object被安插一个指针，指向相关的virtual table，，，vptr
+
+*加上继承（Adding Inheritance）*
+
+**对象模型如何影响程序（How the Object Model Effects Programs）**
+
+## 1.2 关键词所带来的差异（A Keyword Distinction）
+
+如果不是为了努力维护与C之间的兼容性，C++远可以比现在更简单些
+
+当语言无法区分那是一个声明还是一个表达式（expression）时，我们需要一个超越语言范围的规则，而该规则会将上述式子判断为一个“声明”
+
+，，，，，，
+
+## 1.3 对象的差异（An Object Distinction）
+
+C++程序设计模型直接支持三种programming paradigms（程序设计范式）
+
+1. 程序模型（procedural model）
+2. 抽象数据类型模块（abstract data type model， ADT)
+3. 面向对象模型（object-oriented model）
+
+**指针的类型（The Type of a Pointer）**
+
+”指针类型“会教导编译器如何解释某个特定地址中的内存内容及其大小
+
+**加上多态之后（Adding Polymorphism）**
+
+弹性（OO）和效率（OB）
 
 # 第2章 构造函数语意学
 
@@ -95,5 +158,3 @@ C++老手分两类：
 ## 7.2 异常处理
 ## 7.3 执行期类型识别
 ## 7.4 效率有了，弹性呢？
-
-
