@@ -144,19 +144,71 @@ C++程序设计模型直接支持三种programming paradigms（程序设计范�
 
 **显示的初始化操作（Explicit Initialization）**
 
+在严谨的C++用词中，“定义”是指“占用内存”的行为
+
 **参数的初始化（Argument Initialization）**
+
+在编译器实现技术上，有一种策略是导入所谓的临时性object，，，
+
+另一种实现方法是以“拷贝建构”（copy construct）的方式，，，
 
 **返回值的初始化（Return Value Initialization）**
 
+Stroustrup在cfront中的解决方法是一个双阶段转化：
+
+1. 首先加上一个额外参数，类型是class object的一个reference
+2. 在return指令之前安插一个copy constructor调用操作
+
 **在使用者层面做优化（Optimization at the User Level）**
+
+定义一个“计算用”的constructor
+
+不过，这种解决方法受到某种批评，怕那些特殊计算用途的constructor可能会大量扩散。
+
+在这个层面上，class的设计是以效率考虑居多，而不是以“支持抽象化”为优先
 
 **在编译器层面做优化（Optimization at the Compiler Level）**
 
+Named Return Value（NRV）优化
+
+饱受批评，，，其中一个原因是，
+
+优化由编译器默默完成，而它是否真的被完成，并不十分清楚
+
+第二个原因是，一旦函数变得比较复杂，优化也就变得比较难以施行
+
+一般而言，面对“以一个class object作为另一个class object的初值”的情形，语言允许编译器有大量的自由发挥空间。
+
+其利益当然是导致机器码产生时有明显的效率提升。缺点是你不能够安全地规划你的copy constructor的副作用，必须视其执行而定。
+
 **Copy Constructor：要还是不要？**
+
+是否预见class需要大量的memberwise初始化操作，，，如果答案是yes，那么提供一个copy constructor的explicit inline函数实例就非常合理---在“你的编译器提供NRV优化”的前提下。
+
+然而不管使用memcpy()还是memset()，都只有在“classes不含任何由编译器产生的内部members”时才能有效运行。
 
 **摘要**
 
+Copy Constructor的应用，迫使编译器多多少少对你的程序代码做部分转化。
+
 ## 2.4 成员们的初始化队伍（Member Initialization List）
+
+要不是经由member initialization list，就是在constructor函数本体之内
+
+在下列情况下，为了让你的程序能够被顺利编译，你必须使用member initialization list：
+
+1. 当初始化一个reference member时;
+2. 当初始化一个const member时;
+3. 当调用一个base class的constructor，而它拥有一组参数时;
+4. 当调用一个member class的constructor，而它拥有一组参数时。
+
+list中项目顺序是由class中的members声明顺序决定的，不是initialization list中的排列顺序决定的。
+
+initialization list的项目被放在explicit user code之前
+
+编译器会对initialization list一一处理并可能重新排序，以反映出members的声明顺序。
+
+它会安插一些代码到constructor体内，并置于任何explicit user code之前
 
 # 第3章 Data语意学
 
