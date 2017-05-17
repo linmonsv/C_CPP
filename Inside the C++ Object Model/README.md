@@ -290,26 +290,191 @@ initialization list的项目被放在explicit user code之前
 
 **Static Data Members**
 
+每一个member的存取许可，以及与class的关联，并不会导致任何空间上或执行时间上的额外负担
+
+，，，名称冲突，，，编译器的解决方法是暗中对每一个static data member编码（name-mangline）
+
+任何name-mangling做法都有两个要点：
+
+1. 一种算法，推导出独一无二的名称
+2. 万一编译系统（或环境工具）必须和使用者交谈，那些独一无二的名称可以轻易被推导回到原来的名称
+
 **Nonstatic Data Members**
+
+只要程序员在一个member functions中直接处理一个nonstatic data member，所谓“implicit class object”（由this指针表达）就会发生
+
+欲对一个nonstatic data member进行存取操作，编译器需要把class object的起始地址加上data member的偏移量（offset）
+
+指向data member的指针，其offset值总是被加上1，这样可以使编译系统区分出“一个指向data member的指针，用以指出class的第一个member”
+
+和“一个指向data member的指针，没有指出任何member”两种情况
+
+每一个nonstatic data member的偏移量（offset）在编译时期即可获知
 
 ## 3.4 “继承”与Date Member
 
-只要继承不要多态（Inheritance without Polymorphism）
+**只要继承不要多态（Inheritance without Polymorphism）**
 
-加上多态（Adding Polymorphism）
+具体继承（concrete inheritance，相对于虚拟继承 virtual inheritance）并不会增加空间或存取时间上的额外负担
 
-多重继承（Multiple Inheritance）
+经验不足的人可能会重复设计一些相同操作的函数，，，
 
-虚拟继承（Virtual Inheritance）
+第二个易犯的错误是，把一个class分解为两层或更多层，有可能会为了“表现class体系之抽象化”
+
+不论是 C 或 C++ 都是这样。一般而言，边界调整（alignment）是由处理器（processor）来决定的
+
+**加上多态（Adding Polymorphism）**
+
+这样的弹性，当然正式面向对象程序设计的中心。支持这样的弹性势必给我们的，，，带来空间和存取时间的额外负担
+
+*，，，最大的一个好处是，你可以把opeartor+=运用在一个Point3d对象和一个Point2d对象身上，，，*
+
+把vptr放在class object的尾端，可以保留base class C struct的对象布局，因而允许在C程序代码中也能使用
+
+把vptr放在class object的前端，对于“在多重继承下，通过指向class members的指针调用virtual function”，会带来一些帮助
+
+**多重继承（Multiple Inheritance）**
+
+单一继承提供了一种“自然多态（natural polymorphism）”形式，，，
+
+base class和derived class的objects都是从相同的地址开始，其间差异只在于derived object比较大，用以多容纳它自己的nonstatic data members
+
+对一个多重派生对象，将其地址指定给“最左端（也就是第一个）base class 的指针”，
+
+情况将和单一继承时相同，因为二者都指向相同的起始地址。
+
+至于第二个或后继的base class的地址指定操作，则需要将地址修改过
+
+，，，对于指针，内部转换操作需要有一个条件测试：，，，
+
+至于reference，则不需要针对可能的 0 值做防卫，因为reference不可能参考到“无物”（no object）
+
+**虚拟继承（Virtual Inheritance）**
+
+要在编译器中支持虚拟继承，，，实现技术的挑战在于，要找到一个足够有效的方法，
+
+将istream和ostream各自维护的一个ios subobject，折叠成一个由iostream维护的单一ios subobject，
+
+并且还可以保存base class和derived class的指针（以及reference）之间的多态指定操作（polymorphism assignments）
+
+在cfront实现模型之下，，，
+
+有两个主要的缺点：
+
+1. 每一个对象必须针对每一个virtual base class背负一个额外的指针
+2. 由于虚拟继承串链的加长，导致间接存取层次的增加
+
+，，，第二个问题，，，
+
+MetaWare，，，解决，，，双重指针
+
+，，，第一个问题，，，
+
+Microsoft，，，virtual base class table，，，
+
+Bajarne，，，在virtual function table中放置virtual base class的offset
+
+一般而言，virtual base class最有效的一种运用形式就是：一个抽象的virtual base class，没有任何data members
 
 ## 3.5 对象成员的效率（Object Member Efficiency）
 
+assembly语言，，，
+
+在你开始“程序代码层面的优化操作”以加速程序的运行之前，你应该先确实地测试效率，而不是靠着推论与常识判断
+
+单一继承应该不会影响测试的效率
+
+程序员如果关心其程序效率，应该实际测试，不要光凭推论或常识判断或假设。
+
+另一个需要注意的是，优化操作并不一定总是能够有效运行
+
+“间接性”压抑了“把所有运算都移往缓存器执行”的优化能力，但是间接性并不会严重影响非优化程序的执行效率
+
 ## 3.6 指向Data Members的指针（Pointer of Data Members）
-“指向Members的指针”的效率问题
+
+指向data members的指针，是一个优点神秘但颇有用处的语言特性
+
+C++ Standard允许vptr被放在对象中的任何位置
+
+实际上vptr不是放在对象的头部，就是放在对象的尾部
+
+，，，然而你若去取data members的地址，传回的值总是多1，，，
+
+，，，Visual C++ 做了特殊处理，，，
+
+在多重继承之下，若要将第二个（或后继）base class的指针和一个“与derived class object绑定”之member结合起来，那么将会因为“需要加入offset值”而变得相当复杂
+
+**“指向Members的指针”的效率问题**
+
+为每一个“member存取操作”加上一层间接性（经由已绑定的指针），会使执行时间多出一倍不止，
+
+以“指向member的指针”来存取数据，再一次几乎用掉了双倍时间
+
+虚拟继承所带来的主要冲击是，它妨碍了优化的有效性
+
+额外的间接性会降低“把所有的处理都搬移到缓存器中执行”的优化能力
 
 # 第4章 Function语意学
 
+C++ 支持三种类型的member functions: static、nonstatic和virtual，每一种类型被调用的方式都不相同
+
+，，，可以确定它一定不是static，原因有二：
+
+（1）它直接存取nonstatic数据；
+（2）它被声明为const，，，
+
 ## 4.1 Member的各种调用方式
+
+原始的“C with Classes”只支持nonstatic member functions
+
+Virtual函数时在20世纪80年代中期被加进来的，，，
+
+Static member functions是最后被引入的一种函数类型，，，1987年，，，
+
+**Nonstatic Member Functions（非静态成员函数）**
+
+C++ 的设计准则之一就是：nonstatic member function至少必须和一般的nonmember function有相同的效率
+
+，，，实际上member function被内化为nonmember的形式。下面就是转换步骤：
+
+1. 改写函数的signature，，，this指针
+2. 将每一个“对nonstatic data member的存取操作”改为经由this指针来存取
+3. 将member function重新写成一个外部函数，对函数名称进行“mangling”处理，使它在程序中称为独一无二的词汇
+
+*名称的特殊处理（Name Mangling）*
+
+一般而言，member的名称前面会被加上class名称，形成独一无二的命名。
+
+,,,参数链表，，，参数类型，，，
+
+（但如果你声明extern “C”，就会压抑nonmember functions的“mangling”效果）
+
+两个实体如果拥有独一无二的name mangling，那么任何不正确的调用操作在链接时期就因无法决议（resolved）而失败，，，“确保类型安全的链接行为（type-safe linkage）”
+
+如果“返回类型”声明错误，就没办法检查出来
+
+当前的编译系统中，有一种所谓的demangling工具，用来拦截名称并将其转换回去
+
+**Virtual Member Functions（虚拟成员函数）**
+
+明确地调用“Point3d实体”会比较有效率，并因此压制由于虚拟机制而产生的不必要的重复调用操作
+
+如果，，，声明为inline函数会更有效率
+
+“经由一个class object调用一个virtual function”，这种操作应该总是被编译器像对待一般的nonstatic member function一样地加以决议（resolved）
+
+，，，这项优化工程的另一利益是，virtual function的一个inline函数实体可以被扩展（expanded）开来，因而提供极大的效率利益
+
+**Static Member Functions（静态成员函数）**
+
+在引入static member functions之前，C++ 语言要求所有的member functions都必须经由该class的object来调用
+
+“member selection”语法的使用是一种符号上的便利
+
+Static member function由于缺乏this指针，因此差不多等同于nonmember function。它提供了一个意想不到的好处：成为一个callback函数，使我们得以将C++和C-based X Window系统结合，，，
+
+它们也可以成功地应用在线程（threads）函数身上，，，
+
 ## 4.2 Virtual Member Functions
 ## 4.3 函数的效能
 ## 4.4 指向Member Function的指针
