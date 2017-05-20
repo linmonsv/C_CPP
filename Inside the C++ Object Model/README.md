@@ -282,9 +282,63 @@ initialization list的项目被放在explicit user code之前
 
 # 第3章 Data语意学（The Semantics of Data）
 
+“永恒的”library，，，准备工作，，，
+
+class X{};
+
+它有一个隐藏的 1 byte 大小，那是被编译器安插进去的一个char。
+
+这使得这一class的两个objects得以在内存中配置独一无二的地址
+
+事实上Y和Z的大小受到三个因素的影响：
+
+1. 语言本身所造成的额外负担
+2. 编译器对特殊情况所提供的优化处理
+3. Alignment的限制
+
+*在32位计算机上，通常alignment为4bytes（32位），以使bus的“运输量”达到最高效率*
+
+Empty virtual base class，，，virtual interface，，，
+
+，，，在这个策略中，一个empty ，，，被视为derived class object最开头的一部分，，，
+
+编译器之间的潜在差异正说明了C++ 对象模型的演化，，，
+
+，，，种种启发（尝试错误）法于是被引入，提供优化的处理。如果成功，启发法于是就提升为普遍的策略
+
+一个virtual base class subobject只会在derived class中存在一份实例
+
+如果我们在virtual base class X中放置一个（以上）的data members，两种编译器（，，，）就会产生除完全相同的对象布局
+
+C++ Standard并不强制规定如“base class subobjects”或“不同存取层级的data members的排列顺序”这种琐碎细节，，，
+
+每一个class object因此必须有足够的大小以容纳它所有的nonstatic data members。有时候其值可能令你吃惊（，，，），因为它可能比你想象的还大，原因是：
+
+1. 由编译器自动加上的额外data members，用以支持某些语言特性（主要是各种virtaul特性）
+2. 因为alignment（边界调整）的需要
+
 ## 3.1 Data Member的绑定（The Binding of a Data Member）
 
+C++的两种防御性程序设计风格：
+
+1. 把所有的data members放在class声明起头处，以确保正确的绑定
+2. 把所有的inline functions，不管大小都放在class声明之外
+
+C++ Standard以“member scope resolution rules”来精炼这个“rewriting rule”
+
+然而，这对于member function的argument list并不为真。
+
+Argument list中的名称还是会在它们第一次遭遇时被适当地决议（resolved）完成。因此在extern和nested type name之间的非直觉绑定操作还是会发生
+
+上述这个语言状况，仍然需要某种防御性程序风格：请总是把“nested type声明”放在class的起始处。
+
 ## 3.2 Data Member的布局（Data Member Layout）
+
+Nonstatic data members在class object中的排列顺序将和其被声明的顺序一样，任何中间介入的static data members，，，都不会被放进对象布局之中
+
+C++ Standard要求，在同一个access section（，，，）中，members的排列只需符合“较晚出现的members在class object中有较高的地址”这一条件即可
+
+目前各家编译器都是把一个以上的access section连锁在一起，依照声明的顺序，成为一个连续区块。Access sections的多寡并不会招来额外负担。
 
 ## 3.3 Data Member的存取
 
