@@ -529,10 +529,27 @@ Static member function由于缺乏this指针，因此差不多等同于nonmember
 
 它们也可以成功地应用在线程（threads）函数身上，，，
 
-## 4.2 Virtual Member Functions
+## 4.2 Virtual Member Functions（虚拟成员函数）
+
+### 多重继承下的Virtual Functions
+
+### 虚拟继承下的Virtual FUnctions
+
 ## 4.3 函数的效能
-## 4.4 指向Member Function的指针
+
+## 4.4 指向Member Function的指针（Pointer-to-Member Functions）
+
+### 支持“指向Virtual Member Functions”的指针
+
+### 在多重继承下，指向Member Functions的指针
+
+### “指向Member Functions之指针”的效率
+
 ## 4.5 Inline Functions
+
+### 形式参数（Formal Arguments）
+
+### 局部变量（Local Variable）
 
 # 第5章 构造、析构、拷贝语意学
 
