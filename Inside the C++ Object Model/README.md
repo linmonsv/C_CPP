@@ -600,9 +600,19 @@ inline函数不只能够节省一般函数调用所带来的额外负担，也�
 
 ## 4.4 指向Member Function的指针（Pointer-to-Member Functions）
 
+指向member function的指针的声明语法，以及指向“member selection运算符”的指针，其作用是作为this指针的空间保留者
+
+使用一个“member function指针”，如果并不用于virtual function、多重继承、virtual base class等情况的话，并不会比使用一个“nonmember function指针”的成本更高
+
 ### 支持“指向Virtual Member Functions”的指针
 
+对一个nonstatic member function取其地址，将获得该函数在内存中的地址。
+
+然而面对一个virtual function，其地址在编译时期是未知的，所能知道的仅是virtual function在其相关之virtual table中的索引值
+
 ### 在多重继承下，指向Member Functions的指针
+
+有许多编译器在自身内部根据不同的classes特性提供多种指向member functions的指针形式
 
 ### “指向Member Functions之指针”的效率
 
