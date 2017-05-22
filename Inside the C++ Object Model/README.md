@@ -531,11 +531,72 @@ Static member function由于缺乏this指针，因此差不多等同于nonmember
 
 ## 4.2 Virtual Member Functions（虚拟成员函数）
 
+“执行期类型判断法（runtime type resolution）”
+
+或许最直接了当但是成本最高的解决方法就是把必要的信息加载ptr身上，
+
+在这样的策略之下，一个指针（或是一个reference）含有两项信息：
+
+1. 它所参考到的对象的地址
+2. 对象类型的某种编码，或是某个结构的地址
+
+在C++中，多态（polymorphism）表示“以一个public base class的指针（或reference），寻址出一个derived class object”的意思
+
+，，，这种多态形式被称为消极的（passive），可以在编译时期完成---virtual base class的情况除外
+
+当被指出的对象真正被使用时，多态也就变成积极的（active）了
+
+runtime type identification（RTTI），，，就能够在执行期查询一个多态的pointer或多态的reference了
+
+识别一个class是否支持多态，唯一适当的方法就是看看它是否有任何virtual function。只要class拥有一个virtual function，它就需要这份额外的执行期信息
+
+，，，需要知道：
+
+*ptr所指对象的真实类型，这可使我们选择正确的z()实体*
+
+*z()实体位置，以便我能够调用它*
+
+在C++中，virtual functions可以在编译时期获知，此外，这一组地址是固定不变的
+
+，，，执行期要做的，只是在特定的virtual table slot中激活virtual function
+
+每一个virtual function都被指派一个固定的索引值
+
+唯一一个在执行期才能知道的东西是：slot4所指的到底是哪一个z()函数实体
+
 ### 多重继承下的Virtual Functions
+
+在多重继承中支持virtual function，其复杂度围绕在第二个及后继的base classes身上，以及“必须在执行期调整this指针”这一点
+
+一般规则是，经由指向“第二或后继之base class”的指针（或reference）来调用derived class virtual function
+
+所谓thunk是一小段assembly码，用来（1）以适当的offset值调整指针，（2）跳到virtual function去
+
+用以支持“一个class拥有多个virtual tables”的传统方法是，将每一个tables以外部对象的形式产生出来，并给予独一无二的名称
+
+为了调节执行期链接器的效率，Sun的编译器将多个virtual tables连锁为一个：指向次要表格的指针，可由主要表格名称加上一个offset获得
+
+当函数被认为“足够小”的时候，Sun编译器会提供一个所谓的“split functions”技术：以相同算法产生出两个函数，其中第二个在返回之前，为指针加上必要的offset
+
+，，，OO程序员都会尽量使用小规模的virtual function将操作“局部化”。通常，virtual function的平均大小是 8 行
+
+，，，IBM就是把thunk搂抱在真正被调用的virtual function中，函数一开始先（1）调整this指针，然后才（2）执行程序员所写的函数码
+
+Microsoft以所谓的“address points”来取代thunk策略，即将用来改写别人的那个函数（也就是overriding function）期待获得的是“引入该virtual function之class”（而非derived class）的地址，这就是该函数的“address point”
 
 ### 虚拟继承下的Virtual FUnctions
 
+在虚拟继承的情况下要消除thunks，一般而言已经被证明是一项高难度技术
+
+建议，不要再一个virtual base class中声明nonstatic data members
+
 ## 4.3 函数的效能
+
+inline函数不只能够节省一般函数调用所带来的额外负担，也提供程序优化的额外机会
+
+每多一层继承，virtual function的执行时间就有明显的增加
+
+局部性的pC class object即使未被我们使用，它还是需要一个constructor---但是我们可以经由消除对局部对象的使用，而消除其constructor的调用操作
 
 ## 4.4 指向Member Function的指针（Pointer-to-Member Functions）
 
