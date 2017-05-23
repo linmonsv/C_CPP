@@ -641,13 +641,33 @@ inline函数中的局部变量，再加上有副作用的参数，可能会导�
 
 inline中再有inline，可能会使一个表面上看起来平凡的inline却因其连锁复杂度而没办法扩展开来
 
-# 第5章 构造、析构、拷贝语意学
+# 第5章 构造、解构、拷贝语意学（Semantics of Construction， Destruction，and Copy）
 
-## 5.1 “无继承”情况下的对象构造
+### 纯虚拟函数的存在（Presence of a Pure Virtual Function）
+
+### 虚拟规格的存在（Presence of a Virtual Specification）
+
+### 虚拟规格中const的存在
+
+### 重新考虑class的声明
+
+## 5.1 无继承情况下的对象构造
+
+### 抽象数据类型（Abstract Data Type）
+
+### 为继承做准备
+
 ## 5.2 继承体系下的对象构造
-## 5.3 对象复制语意学
-## 5.4 对象的效能
-## 5.5 析构语意学
+
+### 虚拟继承（Virtual Inheritance）
+
+### vptr初始化语意学（The Semantics of the vptr Initialization）
+
+## 5.3 对象复制语意学（Object Copy Semantics）
+
+## 5.4 对象的效能（Object Efficiency）
+
+## 5.5 解构语意学（Semantics of Destruction）
 
 # 第6章 执行期语意学
 
