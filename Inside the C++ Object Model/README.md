@@ -643,25 +643,107 @@ inline中再有inline，可能会使一个表面上看起来平凡的inline却�
 
 # 第5章 构造、解构、拷贝语意学（Semantics of Construction， Destruction，and Copy）
 
+，，，仍然需要一个明确的构造函数以初始化其data member，，，
+
+，，，derived class 的唯一要求就是Abstract_base 必须提供一个带有唯一参数的protected constructor
+
 ### 纯虚拟函数的存在（Presence of a Pure Virtual Function）
+
+只能被静态地调用（invoked statically）
+
+唯一的例外就是pure virtual destructor：class的设计者一定得定义它，，，
+
+因为么一个derived class destructor会被编译器加以扩展，以静态调用的方式调用其“每一个virtual base class”以及“上一层base class”的destructor
+
+编译器对一个可执行文件采取“分离编译模型”
+
+一个比较好的替代方案就是，不要把virtual destructor声明为pure
 
 ### 虚拟规格的存在（Presence of a Virtual Specification）
 
+把，，，设计一个virtual function，那将是一个糟糕的选择，因为其函数定义内容并不与类型有关，因而几乎不会被后继的derived class 改写
+
+此外，由于它的non-virtual函数实体是一个inline函数，如果常常被调用的话，效率上报报应实在不轻
+
+一般而言，把所有的成员函数都声明为virtual function，然后再考编译器的优化操作把非必要的virtual invocation去除，并不是好的设计观念
+
 ### 虚拟规格中const的存在
+
+决定一个virtual function是否需要const，，，
+
+我的想法很简单，不再用const就是了
 
 ### 重新考虑class的声明
 
-## 5.1 无继承情况下的对象构造
+//虚拟析构不再是pure
+
+//纯虚函数不再是const
+
+//内容与类型无关的函数不再是virtual
+
+//新增一个带有唯一参数的constructor
+
+## 5.1 “无继承”情况下的对象构造
+
+，，，C++ Standard 说这是一种所谓的 Plain Of Data 声明形式
+
+观念上，编译器会为，，，声明一个trivial default constructor、一个trivial destructor、一个trivial copy constructor、一个trivial copy assignment operator。
+
+但实际上，编译器会分析这个声明，并为它贴上 Plain Of Data 卷标
+
+在C之中，global被视为一个“临时性的定义”，，，“特别保留给未初始化之global objects使用”的空间，，，BSS
+
+C++的所有全局对象都被当作“初始化过的数据”来对待
 
 ### 抽象数据类型（Abstract Data Type）
 
+如果要对class中的所有成员都设定常量初值，那么给予一个explicit initialization list会比较高效
+
+Explicit initialization list带来三项缺点：
+
+1. 只有当class members都是public时，此法才奏效
+2. 只能指定常量，因为它们在编译时期就可以被评估求值（evaluated）
+3. 由于编译器并没有自动施行之，所以初始化行为的失败可能性会比较高一些
+
 ### 为继承做准备
+
+virtual functions的导入应该总是附带着一个virtual destructor的声明
+
+virtual function的引入促使每一个，，，object拥有一个virtual table ，，，这个指针提供给我们接口的弹性，
+
+代价是：每一个object需要额外的一个word空间，，，
+
+必须视它对多态（polymorphism）设计所带来的实际效益的比例而定
+
+编译器在优化状态下可能会把object的连续内容拷贝到另一个object身上，而不会实现一个精确地“以成员为基础（memberwise）”的赋值操作
+
+C++ Standard要求编译器尽量延迟nontrivial members的实际合成操作，直到真正遇到其使用场合为止
+
+如果你的设计之中有许多函数都需要以传值方式（by value）传回一个local class object，，，
+
+那么提供一个copy constructor就比较合理，，，它的出现会触发 NRV 优化
 
 ## 5.2 继承体系下的对象构造
 
+一般而言编译器所做的扩充操作大约，，，好多好多，，，
+
+在一个由程序员供应的copy operator中忘记检查自我指派（赋值）操作是否失败，是新手极易陷入的一项错误
+
 ### 虚拟继承（Virtual Inheritance）
 
+传统的“constructor扩充现象”并没有用，这是因为virtual base class的“共享性”之故
+
 ### vptr初始化语意学（The Semantics of the vptr Initialization）
+
+C++ 语言规则告诉我们，，，在一个class的constructor（和destructor）中，经由构造中的对象来调用一个virtual function，其函数实体应该是在此class中有作用的那个
+
+如果调用操作限制必须在constructor中直接调用，那么，，，将每一个调用操作以静态方式决议之，千万不要用到虚拟机制
+
+vptr保证能够在member initialization list被扩展之前，由编译器正确设定好，
+
+但是在语意上这可能是不安全的，因为函数本身可能还得依赖未被设立初值的members，所以我并不推荐这种做法。
+
+然而，从vptr的整体角度来看，这是安全的
 
 ## 5.3 对象复制语意学（Object Copy Semantics）
 
