@@ -747,6 +747,22 @@ vptr保证能够在member initialization list被扩展之前，由编译器正�
 
 ## 5.3 对象复制语意学（Object Copy Semantics）
 
+不准将一个class object 指定给另一个class object，那么只要将copy assignment operator声明为private，并且不提供其定义即可
+
+由于此class已经有了bitwise copy语意，所以implicit copy assignment operator被视为毫无用处
+
+C++ Standard 上说 copy assignment operators 并不表示 bitwise copy semantics 是 nontrivial。
+
+实际上，只有nontrivial instances 才会被合成出来
+
+可能提供一个 copy constructor，为的是把 name return value (NRV) 优化打开
+
+缺少 copy assignment list，，，，编译器一般而言就没有办法压抑上一层 base class 的 copy operators被调用
+
+有一种方法可以保证 most-derived class 会引发（完成）virtual base class subobject 的 copy 行为，那就是在 derived class 的 copy assignment operator 函数实体的最后，明确调用那个 operator
+
+我建议尽可能不要允许一个 virtual base class 的拷贝操作，我甚至提供一个比较奇怪的建议：不要在任何 virtual base class 中声明数据
+
 ## 5.4 对象的效能（Object Efficiency）
 
 ## 5.5 解构语意学（Semantics of Destruction）
