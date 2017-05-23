@@ -765,7 +765,38 @@ C++ Standard 上说 copy assignment operators 并不表示 bitwise copy semantic
 
 ## 5.4 对象的效能（Object Efficiency）
 
+explicit initialization list，，，
+
+bitwise copy 语意，，，预期执行有最好的效率
+
+“memberwise”初始化操作和拷贝操作（Initialization and Copy）
+
+额外的单一继承不应该影响“memberwise对象初始化或拷贝操作”的成本
+
+由于，，，仍然显现出bitwise copy语意，所以额外的多重继承关联不应该在memberwise的对象初始化操作或拷贝操作上增加成本
+
+然而一旦导入虚拟继承语意，，，不再允许class拥有bitwise copy语意，，，导致效率成本的一个重大增加
+
+，，，合成型的inline copy constructor和copy assignment operator于是被产生出来，，，成本仍然较高
+
+对象构造和拷贝的成本增加，原因是继承体系的复杂度增加了
+
 ## 5.5 解构语意学（Semantics of Destruction）
+
+如果class没有定义destructor，那么只有在class内带的member object（或是class自己的base class）拥有destructor的情况下，编译器才会自动合成出一个来。否则，destructor会被视为不需要，也就不需被合成
+
+，，，不需要destructor，为它们提供一个destructor反而不符合效率，你应该拒绝那种被我称为“对称策略”的奇怪想法
+
+为了决定一个class object是否需要一个程序层面的destructor（或是constructor），
+
+请你想想一个class object的生命在哪里结束（或开始）？需要什么操作才能保证对象的完整？
+
+没有任何“class使用者层面”的程序操作是绝对必要的
+
+就像constructor一样，目前对于destructor的一种最佳实现策略就是维护两份destructor实体：
+
+1. 一个complete object实体，，，
+2. 一个base class subobject实体，，，
 
 # 第6章 执行期语意学
 
