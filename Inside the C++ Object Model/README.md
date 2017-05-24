@@ -798,11 +798,51 @@ bitwise copy 语意，，，预期执行有最好的效率
 1. 一个complete object实体，，，
 2. 一个base class subobject实体，，，
 
-# 第6章 执行期语意学
+# 第6章 执行期语意学（Runtime Semantics）
 
-## 6.1 对象的构造和析构
+C++ 的一件困难事情：不太容易从程序代码看出表达式的复杂度
+
+## 6.1 对象的构造和解构（Object Construction and Destruction）
+
+一般而言我们会把 object 尽可能放置在使用它的那个程序区段附近，这样做可以节省不必要的对象产生操作和摧毁操作
+
+### 全局对象（Global Objects）
+
+，，，（这和 C 略有不同，C 并不自动设定初值）
+
+在 C 语言中一个 global object 只能够被一个常量表达式（可在编译时期求其值的那种）设定初值
+
+cfront的束缚是，它的解决方案必须在每一个 UNIX 平台上，，，都有效
+
+nm 命令，nm 会倾印出 object file 的符号表格项目（symbol table entries）
+
+我建议你根本就不用用那些需要静态初始化的 global objects
+
+### 局部静态对象（Local Static Objects）
+
+由于这些 objects 是在需要时才被构造，所以编译时无法预期其集合以及顺序。
+
+为了支持新的规则，可能需要对被产生出来的 static class objects 保持一个执行期链表
+
+### 对象数组（Array of Objects）
+
+，，，的确定义了一个 default destructor，所以这个 destructor 必须轮流施行于每一个元素之上
+
+### Default Constructors 和数组
+
+如果你想要在程序中取出一个 constructor 的地址，这是不可以的
+
+经由一个指针来激活 constructor，将无法（不被允许）存取 default argument values
+
 ## 6.2 new和delete运算符
-## 6.3 临时性对象
+
+### 针对数组的 new 语意
+
+### Placement Operator new 的语意
+
+## 6.3 临时性对象（Temporary Objects）
+
+### 临时性对象的迷思（神话、传说）
 
 # 第7章 站在对象模型的尖端
 
