@@ -869,6 +869,10 @@ new 运算符实际上总是以标准的 C malloc() 完成，虽然并没有规�
 
 ，，，最好就是避免以一个 base class 指针指向一个 derived class objects 所组成的数组---如果 derived class object 比其 base 大的话
 
+基本上，程序员必须迭代走过整个数组，把 delete 运算符实施于每一个元素身上。
+
+以此方式，调用操作将是 virtual，因此，，，，和，，，的 destructor 都会施行于数组中的每一个 objects 身上
+
 ### Placement Operator new 的语意
 
 ## 6.3 临时性对象（Temporary Objects）
