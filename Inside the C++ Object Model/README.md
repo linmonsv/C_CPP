@@ -905,9 +905,24 @@ C++ Standard 说它必须指向相同类型的 class，要不就是一块“新�
 
 *加上适度的努力，反聚合（disaggregation）大有可为。但是一般的 C++ 编译器并没有把它视为一个重要的优化关键*
 
-# 第7章 站在对象模型的尖端
+# 第7章 站在对象模型的尖端（On the Cusp of the Object Model）
 
 ## 7.1 Template
-## 7.2 异常处理
-## 7.3 执行期类型识别
+### Template的“具现”行为（Template Instantiation）
+### Template的错误报告（Error Reporting within a Template）
+### Template中的名称决议方式（Name Resolution within a Template）
+### Member Function的具现行为（Member Function Instantiation）
+
+## 7.2 异常处理（Exception Handling）
+### Exception Handling快速检阅
+### 对Exception Handling的支持
+
+## 7.3 执行期类型识别（Runtime Type Identification， RTTI）
+### Type-Safe Downcast（保证安全的向下转型操作）
+### Type-Safe Dynamic Cast（保证安全的动态转型）
+### Reference并不是Pointers
+### Typeid运算符
+
 ## 7.4 效率有了，弹性呢？
+### 动态共享函数库（Dynamic Shared Libraries）
+### 共享内存（Shared Memory）
