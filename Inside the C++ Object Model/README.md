@@ -875,6 +875,12 @@ new 运算符实际上总是以标准的 C malloc() 完成，虽然并没有规�
 
 ### Placement Operator new 的语意
 
+一个合理的习俗是令执行 new 的这一端也要负责执行 destructor 的责任
+
+C++ Standard 说它必须指向相同类型的 class，要不就是一块“新鲜”内存，足够容纳该类型的 object。
+
+注意，derived class 很明显并不在被支持之列
+
 ## 6.3 临时性对象（Temporary Objects）
 
 ### 临时性对象的迷思（神话、传说）
