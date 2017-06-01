@@ -855,7 +855,7 @@ pi 所指对象之生命会因 delete 而结束
 
 语言要求每一次对 new 的调用都必须传回一个独一无二的指针。解决该问题的传统方法是传回一个指针，指向一个默认为 1-byte 的内存区块
 
-这个实现技术的另一个有趣之处是，它允许使用者提供一个属于自己的 _new_handler() 函数
+这个实现技术的另一个有趣之处是，它允许使用者提供一个属于自己的_new_handler() 函数
 
 new 运算符实际上总是以标准的 C malloc() 完成，虽然并没有规定一定得这么做不可，相同的情况，delete 运算符也总是以标准的 C free()完成
 
@@ -907,22 +907,147 @@ C++ Standard 说它必须指向相同类型的 class，要不就是一块“新�
 
 # 第7章 站在对象模型的尖端（On the Cusp of the Object Model）
 
+三个著名的C++语言扩充性质，它们都会影响C++对象。它们分别是template、exception handling（EH）和runtime type identification（RTTI）
+
 ## 7.1 Template
-### Template的“具现”行为（Template Instantiation）
+
+标准模板库（也就是Standard Template library，STL）的基础
+
+甚至被使用于一项所谓的template metaprograms技术：class expression templates将在编译时期而非执行期被评估（evaluated），因而带来重大的效率提升
+
+template是最令程序员挫败的一个主题，恐怕也是真的。错误消息可能远在真正问题的十万八千里处就产生了
+
+template的三个主要讨论方向：
+
+1. template的声明
+2. 如何“实例化（instantiates）” class object、inline nonmember以及member template functions
+3. 如何“实例化（instantiates）” nonmember、member template functions以及static template class members
+
+“实例化（instantiates）” ，，，表示“进程（process）将真正的类型和表达式绑定到template相关形式参数（format parameters）上头”的操作
+
+### Template的“实例化”行为（Template Instantiation）
+
+在C++ Standard完成之前，"声明一个指针指向某个template class"这件事情并未被强制定义
+
+如今C++ Standard已经禁止编译器这么做
+
+member functions（至少对于那些未被使用过的）不应该被“实例化”。
+
+只有在member functions被使用的时候，C++ Standard才要求它们被“实例化”。
+
+目前的编译器并不精确遵循这项要求。之所以由使用者来主导“实例化”（instantiation）规则，有两个主要原因：
+
+1. 空间和时间效率的考虑
+2. 尚未实现的机能
+
+这些函数在什么时候“实例化”？目前流行两种策略：
+
+1. 在编译的时候
+2. 在链接的时候
+
+在“int和long一致“的架构之中，两个类型实例化操作，，，目前我知道的所有编译器都产生两个实例
+
 ### Template的错误报告（Error Reporting within a Template）
-### Template中的名称决议方式（Name Resolution within a Template）
-### Member Function的具现行为（Member Function Instantiation）
+
+在一个nontemplate class声明中，，，，这，，，错误会被编译器挑出来。
+
+但template class 却不同，，，所有与类型有关的检验，如果牵涉到template参数，都必须延迟到真正的实例化操作（instantiation）发生
+
+template中那些与语法无关的cpu，程序员可能认为是十分明显，编译器却让它通过了，只有在特定实例被定义之后，才会发出抱怨
+
+### Template中的名称决议法（Name Resolution within a Template）
+
+一种是C++ Standard所谓的“scope of the template definition”，也就是“定义出template”的程序端。
+
+另一种是C++ Standard所谓的“scope of the template instantiation”，也就是“实例化template”的程序端
+
+Template之中，对于一个nonmember name的决议结果，是根据这个name的使用是否与“用以实例化该template的参数类型”有关而决定的。
+
+如果其使用互不相关，那么就以“scope of the template declaration”来决定name。
+
+如果其使用互有关联，那么就以“scope of the template instantiation”来决定name。
+
+函数的决议结果只和函数的原型（signature）有关，和函数的返回值没有关系
+
+（这种行为不能够以一个简单的宏扩展---像是使用一个#define宏---重现之）
+
+这意味着一个编译器必须保持两个scope contexts：
+
+1. “scope of the template declaration”，用以专注于一般的template class
+2. “scope of the template instantiation”，用以专注于特定的实例
+
+### Member Function的实例化行为（Member Function Instantiation）
+
+，，，最困难的，，，目前编译器提供了两个策略：一个是编译时期策略，程序代码必须在program text file中备妥可用;另一个是链接时期策略，有一些meta-compilation工具可以导引编译器的实例化行为（instantiation）
+
+，，，弱点：当template实例被产生出来时，有时候会大量增加编译器时间
+
+C++ template的原始意图可以想见是一个由使用者导引的自动实例化机制（use-directed automatic iinstantiation mechanism），既不需要使用者的介入，也不需要相同文件有多次的实例化行为
+
+如果一个virtual function被实例化（instantiated），其实例化点紧跟在其class的实例化点之后
+
+，，，Automatic instantiation在此失效！程序员必须显式地强迫将destructor实例化。目前的编译系统以#pragma指令来支持此需求。然而C++ Standard也已经扩充了对template的支持，允许程序员显式地要求在一个文件中将整个class template实例化
+
+以手动方式先在个别的object module中完成预先实例化操作（pre-instantiation），虽然沉闷，却是唯一有效率的方法
 
 ## 7.2 异常处理（Exception Handling）
+
 ### Exception Handling快速检阅
+
+C++的exception handling由三个主要的词汇组件构成：
+
+1. 一个throw子句
+2. 一个或多个catch子句
+3. 一个try区段
+
+如果都没有吻合者，那么默认的处理例程terminate()会被调用
+
+在程序员层面，exception handling也改变了函数在资源管理上的语意
+
+让函数成为“exception proof”的最明确（但不是最有效率）方法就是安插一个default catch子句
+
+处理这些资源管理问题，我的一个建议方法就是，将资源需求封装于一个class object体内，并由destructor来释放资源
+
 ### 对Exception Handling的支持
 
+**决定throw是否发生在一个try区段中**
+
+将exception的类型和每一个catch子句的类型做比较
+
+当一个实际对象在程序执行时被抛出，会发生什么事？
+
+与其他语言特性进行比较，C++编译器支持EH机制所付出的代价最大。某种程度上是由于其执行期的天性以及对底层硬件的依赖，以及UNIX和PC两种平台对于执行速度和程序大小有着不同的取舍优先状态之故
+
 ## 7.3 执行期类型识别（Runtime Type Identification， RTTI）
+
+Downcast有潜在性的危险，因为它遏制了类型系统的作用，不正确的使用可能会带来错误的解释（如果它是一个read操作）或腐蚀掉程序内存（如果它是一个write操作）
+
 ### Type-Safe Downcast（保证安全的向下转型操作）
-### Type-Safe Dynamic Cast（保证安全的动态转型）
+
+C++被吹毛求疵的一点就是，它缺乏一个保证安全的downcast（向下转换操作）。只有在“类型真的可以被适当转换的情况下”，你才能狗执行downcast。
+
+在C++中，一个具备多态性质的class（所谓的polymorphic class），正是内含着继承而来（或直接声明）的virtual functions
+
+### Type-Safe Dynamic Cast（保证安全的动态转换）
+
+dynamic_cast运算符可以在执行期决定真正的类型。如果downcast是安全的，这个运算符会传回被适当转换过的指针。如果downcast不是安全的，这个运算符会传回0
+
 ### Reference并不是Pointers
+
+如果reference并不真正是某一个derived class，那么，由于不能够传回0,因此抛出一个bad_cast exception
+
 ### Typeid运算符
 
+，，，这与先前使用多态类型（）的差异在于，这时候的type_info object是静态取得，而非执行期取得。一般的实现策略是在需要时才产生type_info object，而非程序一开头就产生之
+
 ## 7.4 效率有了，弹性呢？
+
+，，，在某些领域方面，像是动态共享函数库（dynamically shared libraries）、共享内存（shared memory）以及分布式对象（distributed object）方面，这个对象模型的弹性还是不够的
+
 ### 动态共享函数库（Dynamic Shared Libraries）
+
+，，，这是因为class的大小及其每一个直接（或继承而来）的members的偏移位置（offset）都在编译时期就已经固定（虚拟继承的members除外）
+
 ### 共享内存（Shared Memory）
+
+，，，对象模型（Object Model）将证明C++的全面适用性，不论在各式各样的操作系统、各式各样的硬件驱动程序、基因工程上，还是在我自己专注的3D计算机绘图和动画上
