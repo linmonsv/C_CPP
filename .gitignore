@@ -7,3 +7,4 @@
 *.exe
 *.obj
 /Professional C++/.vs
+*.txt
