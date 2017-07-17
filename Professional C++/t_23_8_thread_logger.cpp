@@ -5,6 +5,7 @@
 #include <fstream>
 #include <string>
 #include <sstream>
+#include <atomic>
 
 using namespace std;
 
@@ -12,10 +13,12 @@ class Logger
 {
 public:
 	Logger();
+	virtual ~Logger();
 	Logger(const Logger& src) = delete;
 	Logger& operator=(const Logger& rhs) = delete;
 	void log(const std::string& entry);
 private:
+	std::atomic<bool> mExit;
 	void processEntries();
 	std::mutex mMutex;
 	std::condition_variable mCondVar;
@@ -23,9 +26,19 @@ private:
 	std::thread mThread;
 };
 
-Logger::Logger()
+Logger::Logger() : mExit(false)
 {
 	mThread = thread(&Logger::processEntries, this);
+}
+
+Logger::~Logger()
+{
+	{
+		unique_lock<mutex> lock(mMutex);
+		mExit = true;
+		mCondVar.notify_all();
+	}
+	mThread.join();
 }
 
 void Logger::log(const std::string& entry)
@@ -44,7 +57,9 @@ void Logger::processEntries()
 	}
 	unique_lock<mutex> lock(mMutex);
 	while (true) {
-		mCondVar.wait(lock);
+		if (!mExit) {
+			mCondVar.wait(lock);
+		}
 		lock.unlock();
 		while (true) {
 			lock.lock();
@@ -56,6 +71,9 @@ void Logger::processEntries()
 				mQueue.pop();
 			}
 			lock.unlock();
+		}
+		if (mExit) {
+			break;
 		}
 	}
 }
